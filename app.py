@@ -7,3 +7,4 @@ st.write("Welcome to your HCIS project Streamlit app!")
 name = st.text_input("Enter your name:")
 if st.button("Submit"):
     st.success(f"Hello, {name}!")
+    st.write("Testing dev branch!")
