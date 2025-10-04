@@ -169,14 +169,14 @@ class AudioDeepfakeDetector:
             # Calculate final audio authenticity score
             # Higher score = more likely to be real
             authenticity_score = (
-                voice_naturalness * 0.4 +           # 40% weight
-                spectral_authenticity * 0.3 +       # 30% weight
-                audio_quality * 0.2 +               # 20% weight
-                (1 - artifact_score) * 0.1          # 10% weight
+                min(voice_naturalness, 1.0) * 0.4 +           # 40% weight
+                min(spectral_authenticity, 1.0) * 0.3 +       # 30% weight
+                min(audio_quality, 1.0) * 0.2 +               # 20% weight
+                min((1 - artifact_score), 1.0) * 0.1          # 10% weight
             )
             
-            # Convert to percentage
-            audio_score = authenticity_score * 100
+            # Convert to percentage and cap at 100
+            audio_score = min(authenticity_score * 100, 100.0)
             
             # Calculate confidence based on audio duration
             duration = len(y) / sr

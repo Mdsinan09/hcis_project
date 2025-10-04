@@ -52,21 +52,37 @@ def analyze_video():
         return jsonify({"error": str(e)}), 500
 
 # --- Audio Deepfake Detection ---
-@app.route('/api/detect/audio', methods=['POST'])
-def detect_audio():
-    file = request.files.get('file')
-    if not file:
-        return jsonify({"error": "No audio uploaded"}), 400
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(filepath)
-
-    result = {
-        "component": "audio",
-        "confidence": 0.65,
-        "verdict": "fake"
-    }
-    return jsonify(result)
+@app.route("/analyze/audio", methods=["POST"])
+def analyze_audio():
+    """Audio deepfake detection endpoint"""
+    try:
+        # Check if file is present
+        if 'audio' not in request.files and 'video' not in request.files:
+            return jsonify({"error": "No audio or video file provided"}), 400
+        
+        # Accept either audio file or video file
+        if 'video' in request.files:
+            file = request.files['video']
+            is_video = True
+        else:
+            file = request.files['audio']
+            is_video = False
+        
+        if file.filename == '':
+            return jsonify({"error": "Empty filename"}), 400
+        
+        # Save uploaded file
+        upload_path = os.path.join("data", "uploads", file.filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        file.save(upload_path)
+        
+        # Analyze audio
+        result = pipeline.analyze_audio(upload_path, is_video=is_video)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # --- Text Fact Checking ---

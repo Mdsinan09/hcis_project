@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from models.video_module import VideoDeepfakeDetector
+from models.audio_module import AudioDeepfakeDetector
 
 
 class HCISPipeline:
@@ -14,7 +15,13 @@ class HCISPipeline:
     
     def __init__(self):
         print("🚀 Initializing HCIS Pipeline...")
+        
+        # Initialize video detector
         self.video_detector = VideoDeepfakeDetector()
+        
+        # Initialize audio detector
+        self.audio_detector = AudioDeepfakeDetector()
+        
         print("✅ Pipeline ready!")
     
     def analyze_video(self, video_path):
@@ -29,20 +36,22 @@ class HCISPipeline:
         """
         return self.video_detector.analyze_video(video_path)
     
-    def analyze_audio(self, audio_path):
+    def analyze_audio(self, audio_path, is_video=True):
         """
-        Placeholder for audio analysis
+        Analyze audio for deepfakes
+        
+        Args:
+            audio_path: Path to audio file (or video file if is_video=True)
+            is_video: Whether input is video file
+            
+        Returns:
+            Analysis results dictionary
         """
-        return {
-            'success': True,
-            'audio_score': 75.0,
-            'confidence': 80.0,
-            'message': 'Audio analysis coming in Week 3!'
-        }
+        return self.audio_detector.analyze_audio(audio_path, is_video=is_video)
     
     def analyze_text(self, text):
         """
-        Placeholder for text analysis
+        Placeholder for text analysis (Week 4)
         """
         return {
             'success': True,
@@ -54,6 +63,14 @@ class HCISPipeline:
     def fusion_analysis(self, video_score, audio_score, text_score):
         """
         Combine all scores into final verdict
+        
+        Args:
+            video_score: Video authenticity score (0-100)
+            audio_score: Audio authenticity score (0-100)
+            text_score: Text reliability score (0-100)
+            
+        Returns:
+            Combined analysis results
         """
         final_score = (video_score * 0.4 + audio_score * 0.4 + text_score * 0.2)
         

@@ -9,30 +9,21 @@ from scipy.stats import kurtosis, skew
 def extract_audio_from_video(video_path, output_audio_path=None):
     """
     Extract audio track from video file
-    
-    Args:
-        video_path: Path to video file
-        output_audio_path: Where to save extracted audio (optional)
-        
-    Returns:
-        Path to extracted audio file
     """
     try:
         if output_audio_path is None:
-            # Create temp audio file name
             base_name = os.path.splitext(video_path)[0]
             output_audio_path = base_name + "_audio.wav"
         
-        # Use ffmpeg to extract audio (needs ffmpeg installed)
-        # Alternative: use moviepy if ffmpeg not available
+        # Use ffmpeg to extract audio
         try:
             cmd = [
                 'ffmpeg', '-i', video_path,
-                '-vn',  # No video
-                '-acodec', 'pcm_s16le',  # Audio codec
-                '-ar', '22050',  # Sample rate
-                '-ac', '1',  # Mono
-                '-y',  # Overwrite
+                '-vn',
+                '-acodec', 'pcm_s16le',
+                '-ar', '22050',
+                '-ac', '1',
+                '-y',
                 output_audio_path
             ]
             subprocess.run(cmd, check=True, capture_output=True)
@@ -40,12 +31,22 @@ def extract_audio_from_video(video_path, output_audio_path=None):
             return output_audio_path
             
         except (subprocess.CalledProcessError, FileNotFoundError):
-            # Fallback: use moviepy if ffmpeg not available
+            # Fallback: use moviepy
             print("⚠️  ffmpeg not found, trying moviepy...")
-            from moviepy.editor import VideoFileClip
+            try:
+                from moviepy import VideoFileClip
+            except ImportError:
+                from moviepy.editor import VideoFileClip
             
             video = VideoFileClip(video_path)
-            video.audio.write_audiofile(output_audio_path, fps=22050)
+            
+            # ← ADD THIS CHECK
+            if video.audio is None:
+                print("❌ Video has no audio track")
+                video.close()
+                return None
+            
+            video.audio.write_audiofile(output_audio_path, fps=22050, logger=None)
             video.close()
             print(f"✅ Audio extracted to: {output_audio_path}")
             return output_audio_path
@@ -157,35 +158,54 @@ def extract_spectral_features(y, sr):
 def calculate_audio_quality(y, sr):
     """
     Calculate audio quality metrics
-    
-    Args:
-        y: Audio time series
-        sr: Sample rate
-        
-    Returns:
-        Dictionary with quality metrics
     """
     try:
-        # RMS energy (loudness)
+        # Check if audio is empty or silent
+        if len(y) == 0 or np.all(y == 0):
+            return {
+                'rms_mean': 0,
+                'rms_std': 0,
+                'dynamic_range': 0,
+                'voiced_ratio': 0,
+                'kurtosis': 0,
+                'skewness': 0,
+                'overall_quality': 0
+            }
+        
+        # RMS energy
         rms = librosa.feature.rms(y=y)[0]
         
-        # Signal-to-noise ratio estimate
-        # High variance in RMS = good dynamic range
-        dynamic_range = np.std(rms) / (np.mean(rms) + 1e-6)
+        # Safety check for RMS
+        if len(rms) == 0 or np.all(rms == 0):
+            return {
+                'rms_mean': 0,
+                'rms_std': 0,
+                'dynamic_range': 0,
+                'voiced_ratio': 0,
+                'kurtosis': 0,
+                'skewness': 0,
+                'overall_quality': 0.1
+            }
         
-        # Pitch/frequency analysis
+        # Dynamic range
+        mean_rms = np.mean(rms)
+        dynamic_range = np.std(rms) / (mean_rms + 1e-6)
+        
+        # Pitch analysis
         pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
         
-        # Count of voiced frames (frames with clear pitch)
-        voiced_frames = np.sum(magnitudes > np.median(magnitudes))
-        total_frames = magnitudes.shape[1]
-        voiced_ratio = voiced_frames / total_frames
+        if magnitudes.size > 0:
+            voiced_frames = np.sum(magnitudes > np.median(magnitudes))
+            total_frames = magnitudes.shape[1]
+            voiced_ratio = voiced_frames / max(total_frames, 1)
+        else:
+            voiced_ratio = 0
         
         # Statistical properties
-        audio_kurtosis = kurtosis(y)
-        audio_skew = skew(y)
+        audio_kurtosis = kurtosis(y) if len(y) > 0 else 0
+        audio_skew = skew(y) if len(y) > 0 else 0
         
-        # Overall quality score (0-1)
+        # Overall quality score
         quality_score = (
             min(dynamic_range, 1.0) * 0.3 +
             voiced_ratio * 0.4 +
@@ -193,18 +213,26 @@ def calculate_audio_quality(y, sr):
         )
         
         return {
-            'rms_mean': np.mean(rms),
-            'rms_std': np.std(rms),
-            'dynamic_range': dynamic_range,
-            'voiced_ratio': voiced_ratio,
-            'kurtosis': audio_kurtosis,
-            'skewness': audio_skew,
-            'overall_quality': quality_score
+            'rms_mean': float(np.mean(rms)),
+            'rms_std': float(np.std(rms)),
+            'dynamic_range': float(dynamic_range),
+            'voiced_ratio': float(voiced_ratio),
+            'kurtosis': float(audio_kurtosis),
+            'skewness': float(audio_skew),
+            'overall_quality': float(quality_score)
         }
         
     except Exception as e:
         print(f"❌ Error calculating audio quality: {str(e)}")
-        return None
+        return {
+            'rms_mean': 0,
+            'rms_std': 0,
+            'dynamic_range': 0,
+            'voiced_ratio': 0,
+            'kurtosis': 0,
+            'skewness': 0,
+            'overall_quality': 0.1
+        }
 
 
 def detect_audio_artifacts(y, sr):
