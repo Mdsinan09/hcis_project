@@ -1,0 +1,22 @@
+# Virtual Environments
+venv/
+hcis_env/
+*.venv/
+backend_venv/
+
+# Python compiled files
+__pycache__/
+*.pyc
+
+# Operating System files
+.DS_Store
+
+# Logs, Data, and Temporary Files
+data/
+logs/
+temp_uploads/
+
+# Flask/ML Model Specifics
+*.h5
+*.pth
+*.pt
