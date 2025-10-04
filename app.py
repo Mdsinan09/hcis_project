@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+from backend_pipeline import HCISPipeline 
 
 # Initialize Flask App
 app = Flask(__name__)
 CORS(app)
+
+# Initialize pipeline
+pipeline = HCISPipeline() 
 
 # Create upload folder
 UPLOAD_FOLDER = 'data/uploads'
@@ -18,23 +22,34 @@ def home():
 
 
 # --- Video Deepfake Detection ---
-@app.route('/api/detect/video', methods=['POST'])
-def detect_video():
-    file = request.files.get('file')
-    if not file:
-        return jsonify({"error": "No video uploaded"}), 400
-
-    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(filepath)
-
-    # Dummy response for now
-    result = {
-        "component": "video",
-        "confidence": 0.75,
-        "verdict": "real"
-    }
-    return jsonify(result)
-
+@app.route("/analyze/video", methods=["POST"])
+def analyze_video():
+    """Video deepfake detection endpoint"""
+    try:
+        # Check if file is present
+        if 'video' not in request.files:
+            return jsonify({"error": "No video file provided"}), 400
+        
+        video_file = request.files['video']
+        
+        if video_file.filename == '':
+            return jsonify({"error": "Empty filename"}), 400
+        
+        # Save uploaded file
+        upload_path = os.path.join("data", "uploads", video_file.filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        video_file.save(upload_path)
+        
+        # Analyze video
+        result = pipeline.analyze_video(upload_path)
+        
+        # Clean up uploaded file (optional)
+        # os.remove(upload_path)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # --- Audio Deepfake Detection ---
 @app.route('/api/detect/audio', methods=['POST'])
