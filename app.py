@@ -158,6 +158,39 @@ def chat_explain():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+#----generator------#
+@app.route("/generate/speech", methods=["POST"])
+def generate_speech():
+    """Generate synthetic speech for testing"""
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
+        language = data.get('language', 'en')
+        
+        if not text:
+            return jsonify({"error": "No text provided"}), 400
+        
+        result = pipeline.generator.generate_synthetic_speech(text, language)
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/generate/false-claim", methods=["POST"])
+def generate_false_claim():
+    """Generate false text claim for testing"""
+    try:
+        data = request.get_json()
+        claim_type = data.get('type', 'factual')
+        
+        result = pipeline.generator.generate_false_text(claim_type)
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # ---------- MAIN ---------- #
 if __name__ == '__main__':
     app.run(debug=True)

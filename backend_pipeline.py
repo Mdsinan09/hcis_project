@@ -10,6 +10,7 @@ from models.audio_module import AudioDeepfakeDetector
 from models.text_module import TextFactChecker
 from src.models.fusion_module import HCISFusionEngine
 from src.chatbot.hcis_chatbot import HCISChatbot
+from src.generator.deepfake_generator import EducationalDeepfakeGenerator
 
 class HCISPipeline:
     """
@@ -27,6 +28,7 @@ class HCISPipeline:
         self.text_checker = TextFactChecker()
         self.fusion_engine = HCISFusionEngine()
         self.chatbot = HCISChatbot()
+        self.generator = EducationalDeepfakeGenerator()
         
         print("✅ Pipeline ready!")
     
