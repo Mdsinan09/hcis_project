@@ -11,7 +11,7 @@ class HCISChatbot:
     AI chatbot for explaining HCIS analysis results
     """
     
-    def __init__(self, model_name="llama3.2:3b"):
+    def __init__(self, model_name="llama3.2:latest"):
         self.model_name = model_name
         self.conversation_history = []
         

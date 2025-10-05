@@ -133,6 +133,31 @@ def analyze_complete():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# -------- CHATBOT------#
+@app.route("/chat/explain", methods=["POST"])
+def chat_explain():
+    """Chatbot explains HCIS results"""
+    try:
+        data = request.get_json()
+        
+        # Get analysis results
+        results = data.get('results', {})
+        question = data.get('question', None)
+        
+        if not results:
+            return jsonify({"error": "No analysis results provided"}), 400
+        
+        # Generate explanation
+        explanation = pipeline.chatbot.explain_results(results, question)
+        
+        return jsonify({
+            'success': True,
+            'explanation': explanation
+        })
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # ---------- MAIN ---------- #
 if __name__ == '__main__':
     app.run(debug=True)

@@ -9,6 +9,7 @@ from models.video_module import VideoDeepfakeDetector
 from models.audio_module import AudioDeepfakeDetector
 from models.text_module import TextFactChecker
 from src.models.fusion_module import HCISFusionEngine
+from src.chatbot.hcis_chatbot import HCISChatbot
 
 class HCISPipeline:
     """
@@ -25,7 +26,8 @@ class HCISPipeline:
         self.audio_detector = AudioDeepfakeDetector()
         self.text_checker = TextFactChecker()
         self.fusion_engine = HCISFusionEngine()
-
+        self.chatbot = HCISChatbot()
+        
         print("✅ Pipeline ready!")
     
     def analyze_video(self, video_path):
