@@ -17,6 +17,7 @@ imageio-ffmpeg==0.6.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 joblib==1.5.2
+langdetect==1.0.9
 lazy_loader==0.4
 librosa==0.11.0
 llvmlite==0.45.1
@@ -42,6 +43,7 @@ safetensors==0.6.2
 scikit-learn==1.7.2
 scipy==1.16.2
 sentence-transformers==5.1.1
+six==1.17.0
 soundfile==0.13.1
 soxr==1.0.0
 sympy==1.14.0

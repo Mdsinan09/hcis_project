@@ -1,12 +1,13 @@
 import os
 import sys
 
+
 # Add src to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 from models.video_module import VideoDeepfakeDetector
 from models.audio_module import AudioDeepfakeDetector
-
+from models.text_module import TextFactChecker
 
 class HCISPipeline:
     """
@@ -21,7 +22,8 @@ class HCISPipeline:
         
         # Initialize audio detector
         self.audio_detector = AudioDeepfakeDetector()
-        
+        self.text_checker = TextFactChecker()
+
         print("✅ Pipeline ready!")
     
     def analyze_video(self, video_path):
@@ -51,14 +53,9 @@ class HCISPipeline:
     
     def analyze_text(self, text):
         """
-        Placeholder for text analysis (Week 4)
-        """
-        return {
-            'success': True,
-            'text_score': 70.0,
-            'confidence': 85.0,
-            'message': 'Text analysis coming in Week 4!'
-        }
+    Analyze text for fact-checking
+    """
+        return self.text_checker.analyze_text(text)
     
     def fusion_analysis(self, video_score, audio_score, text_score):
         """

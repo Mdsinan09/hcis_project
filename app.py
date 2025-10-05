@@ -85,21 +85,22 @@ def analyze_audio():
         return jsonify({"error": str(e)}), 500
 
 
-# --- Text Fact Checking ---
-@app.route('/api/detect/text', methods=['POST'])
-def detect_text():
-    data = request.get_json()
-    text = data.get('text', '')
-    if not text:
-        return jsonify({"error": "No text provided"}), 400
-
-    result = {
-        "component": "text",
-        "confidence": 0.90,
-        "verdict": "real"
-    }
-    return jsonify(result)
-
+# --- Text Fact-Checking ---
+@app.route("/analyze/text", methods=["POST"])
+def analyze_text():
+    """Text fact-checking endpoint"""
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
+        
+        if not text.strip():
+            return jsonify({"error": "No text provided"}), 400
+        
+        result = pipeline.analyze_text(text)
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # --- Fusion Engine ---
 @app.route('/api/fusion', methods=['POST'])

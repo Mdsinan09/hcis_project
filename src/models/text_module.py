@@ -1,0 +1,269 @@
+import numpy as np
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+import sys
+import os
+
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils.text_helpers import (
+    load_truth_database,
+    detect_language,
+    extract_claims,
+    preprocess_text,
+    calculate_text_statistics,
+    detect_hallucination_patterns
+)
+
+
+class TextFactChecker:
+    """
+    Main class for text fact-checking and authenticity detection
+    """
+    
+    def __init__(self, model_name='all-MiniLM-L6-v2'):
+        print("🔤 Initializing Text Fact Checker...")
+        
+        # Load multilingual sentence transformer
+        self.model = SentenceTransformer(model_name)
+        print(f"✅ Loaded model: {model_name}")
+        
+        # Load truth database
+        self.truth_database = load_truth_database()
+        
+        # Pre-compute embeddings for truth database
+        self.truth_embeddings = self._compute_truth_embeddings()
+        
+        print("✅ Text Fact Checker initialized")
+    
+    def _compute_truth_embeddings(self):
+        """
+        Pre-compute embeddings for all facts in truth database
+        
+        Returns:
+            Dictionary mapping language to embeddings
+        """
+        print("📊 Computing truth database embeddings...")
+        embeddings = {}
+        
+        for language, facts in self.truth_database.items():
+            if facts:
+                embeddings[language] = self.model.encode(facts)
+                print(f"   ✅ {language}: {len(facts)} facts encoded")
+        
+        return embeddings
+    
+    def check_claim_against_database(self, claim, language='english'):
+        """
+        Check a single claim against truth database
+        
+        Args:
+            claim: Text claim to verify
+            language: Language of the claim
+            
+        Returns:
+            Similarity score (0-1)
+        """
+        try:
+            # Get embeddings for this language
+            if language not in self.truth_embeddings:
+                language = 'english'  # Fallback to English
+            
+            truth_emb = self.truth_embeddings.get(language)
+            
+            if truth_emb is None or len(truth_emb) == 0:
+                return 0.5  # Neutral score if no database
+            
+            # Encode the claim
+            claim_embedding = self.model.encode([claim])
+            
+            # Calculate similarity with all facts
+            similarities = cosine_similarity(claim_embedding, truth_emb)[0]
+            
+            # Get best match
+            max_similarity = np.max(similarities)
+            
+            return float(max_similarity)
+        
+        except Exception as e:
+            print(f"❌ Error checking claim: {str(e)}")
+            return 0.5
+    
+    def analyze_factual_accuracy(self, claims, language='english'):
+        """
+    Analyze factual accuracy of all claims
+    """
+        if not claims:
+            return 0.5
+    
+        similarity_scores = []
+    
+        for claim in claims:
+            score = self.check_claim_against_database(claim, language)
+            similarity_scores.append(score)
+    
+        avg_similarity = np.mean(similarity_scores)
+    
+    # STRICTER SCORING:
+    # > 0.85 = Very likely true
+    # 0.70-0.85 = Possibly true
+    # 0.50-0.70 = Uncertain
+    # < 0.50 = Likely false
+    
+        if avg_similarity > 0.85:
+            accuracy_score = avg_similarity
+        elif avg_similarity > 0.70:
+            accuracy_score = avg_similarity * 0.75  # Reduce score
+        elif avg_similarity > 0.50:
+            accuracy_score = avg_similarity * 0.50  # Heavily penalize
+        else:
+            accuracy_score = avg_similarity * 0.30  # Very low score for false claims
+    
+        return accuracy_score
+    
+    def analyze_language_naturalness(self, text):
+        """
+        Analyze if text sounds natural vs AI-generated
+        
+        Args:
+            text: Input text
+            
+        Returns:
+            Naturalness score (0-1)
+        """
+        try:
+            stats = calculate_text_statistics(text)
+            
+            naturalness_score = 0
+            
+            # Check 1: Sentence length (natural: 15-25 words)
+            avg_sent_length = stats['avg_sentence_length']
+            if 10 < avg_sent_length < 30:
+                naturalness_score += 0.3
+            else:
+                # Penalize very short or very long sentences
+                deviation = abs(avg_sent_length - 20) / 20
+                naturalness_score += max(0, 0.3 - deviation * 0.3)
+            
+            # Check 2: Word length (natural: 4-6 characters)
+            avg_word_length = stats['avg_word_length']
+            if 3 < avg_word_length < 7:
+                naturalness_score += 0.3
+            else:
+                deviation = abs(avg_word_length - 5) / 5
+                naturalness_score += max(0, 0.3 - deviation * 0.3)
+            
+            # Check 3: Sentence count (should have multiple sentences)
+            sentence_count = stats['sentence_count']
+            if sentence_count >= 2:
+                naturalness_score += 0.2
+            else:
+                naturalness_score += 0.1
+            
+            # Check 4: Text length (reasonable amount of content)
+            word_count = stats['word_count']
+            if 20 < word_count < 200:
+                naturalness_score += 0.2
+            else:
+                naturalness_score += 0.1
+            
+            return naturalness_score
+        
+        except Exception as e:
+            print(f"❌ Error analyzing language naturalness: {str(e)}")
+            return 0.5
+    
+    def analyze_text(self, text):
+        """
+        Complete text analysis pipeline
+        
+        Args:
+            text: Input text to analyze
+            
+        Returns:
+            Dictionary with analysis results
+        """
+        print(f"\n📝 Starting text analysis...")
+        print(f"   Input length: {len(text)} characters")
+        
+        try:
+            # Detect language
+            language = detect_language(text)
+            
+            # Extract claims
+            claims = extract_claims(text)
+            
+            if not claims:
+                return {
+                    'success': False,
+                    'error': 'No claims could be extracted from text',
+                    'text_score': 0,
+                    'confidence': 0
+                }
+            
+            print(f"📊 Analyzing {len(claims)} claims in {language}...")
+            
+            # Run all analyses
+            factual_accuracy = self.analyze_factual_accuracy(claims, language)
+            language_naturalness = self.analyze_language_naturalness(text)
+            hallucination_score = detect_hallucination_patterns(text)
+            
+            # Calculate final text reliability score
+            # Higher score = more reliable/authentic
+            reliability_score = (
+                factual_accuracy * 0.5 +              # 50% weight on facts
+                language_naturalness * 0.3 +          # 30% weight on naturalness
+                (1 - hallucination_score) * 0.2       # 20% weight on no hallucination
+            )
+            
+            # Convert to percentage
+            text_score = min(reliability_score * 100, 100.0)
+            
+            # Calculate confidence based on number of claims
+            confidence = min(len(claims) / 5 * 100, 100)  # Full confidence at 5+ claims
+            
+            print(f"✅ Text analysis complete!")
+            print(f"   Text Score: {text_score:.1f}%")
+            print(f"   Confidence: {confidence:.1f}%")
+            
+            return {
+                'success': True,
+                'text_score': round(text_score, 2),
+                'confidence': round(confidence, 2),
+                'details': {
+                    'language_detected': language,
+                    'factual_accuracy': round(factual_accuracy * 100, 2),
+                    'language_naturalness': round(language_naturalness * 100, 2),
+                    'hallucination_detection': round(hallucination_score * 100, 2),
+                    'claims_analyzed': len(claims)
+                }
+            }
+        
+        except Exception as e:
+            print(f"❌ Error in text analysis: {str(e)}")
+            return {
+                'success': False,
+                'error': str(e),
+                'text_score': 0,
+                'confidence': 0
+            }
+
+
+# Test the module
+if __name__ == "__main__":
+    checker = TextFactChecker()
+    
+    # Test with sample text
+    test_text = "The capital of France is Paris. Water boils at 100 degrees Celsius."
+    print("\n🧪 Testing with sample text:")
+    print(f"   '{test_text}'")
+    
+    result = checker.analyze_text(test_text)
+    
+    print("\n📊 RESULTS:")
+    print(f"Success: {result['success']}")
+    if result['success']:
+        print(f"Text Score: {result['text_score']}%")
+        print(f"Confidence: {result['confidence']}%")
+        print(f"Details: {result['details']}")
