@@ -22,7 +22,7 @@ class TextFactChecker:
     Main class for text fact-checking and authenticity detection
     """
     
-    def __init__(self, model_name='all-MiniLM-L6-v2'):
+    def __init__(self, model_name='paraphrase-multilingual-MiniLM-L12-v2'):
         print("🔤 Initializing Text Fact Checker...")
         
         # Load multilingual sentence transformer
@@ -208,6 +208,10 @@ class TextFactChecker:
             factual_accuracy = self.analyze_factual_accuracy(claims, language)
             language_naturalness = self.analyze_language_naturalness(text)
             hallucination_score = detect_hallucination_patterns(text)
+            contradiction_penalty = self.detect_contradictions(claims, language)
+
+            # Adjust factual accuracy based on contradictions
+            factual_accuracy = factual_accuracy * (1 - contradiction_penalty * 0.5)
             
             # Calculate final text reliability score
             # Higher score = more reliable/authentic
@@ -233,6 +237,8 @@ class TextFactChecker:
                 'confidence': round(confidence, 2),
                 'details': {
                     'language_detected': language,
+                    'language_confidence': 'high' if language == 'english' else 'limited',
+                    'model_type': 'english_only' if self.model.get_sentence_embedding_dimension else 'multilingual',
                     'factual_accuracy': round(factual_accuracy * 100, 2),
                     'language_naturalness': round(language_naturalness * 100, 2),
                     'hallucination_detection': round(hallucination_score * 100, 2),
@@ -267,3 +273,43 @@ if __name__ == "__main__":
         print(f"Text Score: {result['text_score']}%")
         print(f"Confidence: {result['confidence']}%")
         print(f"Details: {result['details']}")
+
+    def detect_contradictions(self, claims, language='english'):
+        """
+            Check if claims explicitly contradict known facts
+    
+        Returns:
+        Contradiction penalty (0-1, higher = more contradictions)
+        """
+        if language not in self.truth_embeddings:
+            language = 'english'
+    
+            truth_emb = self.truth_embeddings.get(language)
+            if truth_emb is None:
+                return 0
+    
+        contradiction_score = 0
+        truth_facts = self.truth_database.get(language, [])
+    
+        for claim in claims:
+            claim_lower = claim.lower()
+        
+        # Check for explicit contradictions with known facts
+        for fact in truth_facts:
+            fact_lower = fact.lower()
+            
+            # Extract key entities (simple approach)
+            # Example: "capital of France" appears in both
+            if any(word in claim_lower and word in fact_lower 
+                   for word in ['capital', 'temperature', 'speed', 'year', 'number']):
+                
+                # If same topic but different values = contradiction
+                claim_embedding = self.model.encode([claim])
+                fact_embedding = self.model.encode([fact])
+                similarity = cosine_similarity(claim_embedding, fact_embedding)[0][0]
+                
+                # Low similarity on same topic = likely contradiction
+                if 0.4 < similarity < 0.7:
+                    contradiction_score += 0.3
+    
+                    return min(contradiction_score, 1.0)
