@@ -101,23 +101,37 @@ def analyze_text():
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 
 # --- Fusion Engine ---
-@app.route('/api/fusion', methods=['POST'])
-def fusion_engine():
-    data = request.get_json()
-    video = data.get('video_conf', 0)
-    audio = data.get('audio_conf', 0)
-    text = data.get('text_conf', 0)
-
-    overall = (video + audio + text) / 3
-    verdict = "real" if overall > 0.5 else "fake"
-
-    return jsonify({
-        "final_confidence": round(overall, 2),
-        "final_verdict": verdict
-    })
-
+@app.route("/analyze/complete", methods=["POST"])
+def analyze_complete():
+    """Complete HCIS analysis - all components + fusion"""
+    try:
+        # Check for video file and text
+        if 'video' not in request.files:
+            return jsonify({"error": "No video file provided"}), 400
+        
+        data = request.form
+        transcript = data.get('transcript', '')
+        
+        if not transcript.strip():
+            return jsonify({"error": "No transcript provided"}), 400
+        
+        video_file = request.files['video']
+        
+        # Save video
+        upload_path = os.path.join("data", "uploads", video_file.filename)
+        os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+        video_file.save(upload_path)
+        
+        # Complete analysis
+        result = pipeline.analyze_complete(upload_path, transcript)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ---------- MAIN ---------- #
 if __name__ == '__main__':

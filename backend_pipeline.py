@@ -8,6 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from models.video_module import VideoDeepfakeDetector
 from models.audio_module import AudioDeepfakeDetector
 from models.text_module import TextFactChecker
+from src.models.fusion_module import HCISFusionEngine
 
 class HCISPipeline:
     """
@@ -23,6 +24,7 @@ class HCISPipeline:
         # Initialize audio detector
         self.audio_detector = AudioDeepfakeDetector()
         self.text_checker = TextFactChecker()
+        self.fusion_engine = HCISFusionEngine()
 
         print("✅ Pipeline ready!")
     
@@ -88,6 +90,19 @@ class HCISPipeline:
                 'text': text_score
             }
         }
+    def analyze_complete(self, video_path, transcript):
+        """
+        Complete analysis: video + audio + text + fusion
+        """
+        # Analyze all components
+        video_result = self.analyze_video(video_path)
+        audio_result = self.analyze_audio(video_path, is_video=True)
+        text_result = self.analyze_text(transcript)
+    
+        # Fuse results
+        fusion_result = self.fusion_engine.fuse(video_result, audio_result, text_result)
+    
+        return fusion_result
 
 
 # Test the pipeline
