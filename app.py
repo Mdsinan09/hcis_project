@@ -190,6 +190,31 @@ def generate_false_claim():
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/generate/video-with-audio", methods=["POST"])
+def generate_video_with_audio():
+    """Add synthetic audio to video"""
+    try:
+        if 'video' not in request.files:
+            return jsonify({"error": "No video file provided"}), 400
+        
+        video_file = request.files['video']
+        text_script = request.form.get('text', '')
+        
+        if not text_script:
+            return jsonify({"error": "No text script provided"}), 400
+        
+        # Save video
+        upload_path = os.path.join("data", "uploads", video_file.filename)
+        video_file.save(upload_path)
+        
+        # Generate
+        result = pipeline.generator.add_synthetic_audio_to_video(upload_path, text_script)
+        
+        return jsonify(result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
 # ---------- MAIN ---------- #
 if __name__ == '__main__':

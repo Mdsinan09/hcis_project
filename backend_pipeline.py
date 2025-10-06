@@ -29,7 +29,7 @@ class HCISPipeline:
         self.fusion_engine = HCISFusionEngine()
         self.chatbot = HCISChatbot()
         self.generator = EducationalDeepfakeGenerator()
-        
+
         print("✅ Pipeline ready!")
     
     def analyze_video(self, video_path):
@@ -105,7 +105,8 @@ class HCISPipeline:
     
         # Fuse results
         fusion_result = self.fusion_engine.fuse(video_result, audio_result, text_result)
-    
+        fusion_result['explanation'] = self.chatbot.explain_results(fusion_result)
+        
         return fusion_result
 
 

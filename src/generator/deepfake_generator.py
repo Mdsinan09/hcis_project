@@ -208,6 +208,48 @@ class EducationalDeepfakeGenerator:
             'output_directory': self.output_dir
         }
 
+    def add_synthetic_audio_to_video(self, video_path, text_script, output_path=None):
+        """Replace video audio with synthetic speech"""
+        try:
+            from moviepy.editor import VideoFileClip, AudioFileClip
+        
+            # Generate synthetic speech
+            temp_audio = f"{self.output_dir}/audio/temp_speech.mp3"
+            tts = gTTS(text=text_script, lang='en')
+            tts.save(temp_audio)
+        
+            # Combine with video
+            video = VideoFileClip(video_path)
+            audio = AudioFileClip(temp_audio)
+        
+            # Replace audio
+            final_video = video.set_audio(audio)
+        
+            if output_path is None:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                output_path = f"{self.output_dir}/video/synthetic_audio_video_{timestamp}.mp4"
+        
+            final_video.write_videofile(output_path, codec='libx264', audio_codec='aac')
+        
+            video.close()
+            audio.close()
+            os.remove(temp_audio)
+        
+            self._log_generation('video_audio_replacement', {
+            'original_video': video_path,
+            'text_script': text_script,
+            'output': output_path
+            })
+        
+            return {
+                'success': True,
+                'output_path': output_path,
+                'type': 'video_with_synthetic_audio',
+                'warning': '⚠️  This video has synthetic audio for testing only'
+            }
+    
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
 
 if __name__ == "__main__":
     generator = EducationalDeepfakeGenerator()
