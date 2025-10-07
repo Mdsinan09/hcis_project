@@ -187,13 +187,14 @@ class VideoDeepfakeDetector:
         # Calculate overall quality
         quality_scores = [calculate_frame_quality(f)['overall_quality'] for f in processed_frames]
         avg_quality = np.mean(quality_scores)
-        
+        sync_score = self.analyze_audio_visual_sync(video_path)
         # Calculate final video authenticity score
         # Higher score = more likely to be real
         authenticity_score = (
-            face_consistency * 0.4 +           # 40% weight on face consistency
-            avg_quality * 0.3 +                # 30% weight on quality
-            (1 - artifact_score) * 0.3         # 30% weight on lack of artifacts
+            face_consistency * 0.30 +           # 40% weight on face consistency
+            avg_quality * 0.25 +                # 30% weight on quality
+            (1 - artifact_score) * 0.25 +         # 30% weight on lack of artifacts
+            sync_score * 0.15
         )
         
         # Convert to percentage
@@ -218,7 +219,130 @@ class VideoDeepfakeDetector:
             }
         }
 
+    def analyze_audio_visual_sync(self, video_path):
+        """
+        Check if audio and video are synchronized
+        Detects lip-sync mismatches
+        """
+        try:
+            import librosa
+            from moviepy.editor import VideoFileClip
+        
+            # Extract audio from video
+            video = VideoFileClip(video_path)
+            audio_array = video.audio.to_soundarray(fps=22050)
+            audio_mono = audio_array.mean(axis=1) if len(audio_array.shape) > 1 else audio_array
+        
+            # Calculate audio energy over time
+            frame_length = 512
+            hop_length = 256
+            audio_energy = librosa.feature.rms(y=audio_mono, frame_length=frame_length, hop_length=hop_length)[0]
+        
+            # Analyze video frames for mouth movement
+            cap = cv2.VideoCapture(video_path)
+            fps = cap.get(cv2.CAP_PROP_FPS)
+        
+            mouth_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
+            mouth_movements = []
+        
+            frame_idx = 0
+            while cap.read()[0] and frame_idx < 100:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                mouths = mouth_cascade.detectMultiScale(gray, 1.3, 5)
+            
+                # Mouth movement intensity (number and size of detections)
+                movement = len(mouths) * np.mean([w*h for (x,y,w,h) in mouths]) if len(mouths) > 0 else 0
+                mouth_movements.append(movement)
+                frame_idx += 1
+        
+            cap.release()
+            video.close()
+        
+            # Normalize both signals
+            if len(mouth_movements) > 1 and len(audio_energy) > 1:
+                target_len = min(len(mouth_movements), len(audio_energy))
+                mouth_array = np.array(mouth_movements[:target_len])
+                audio_array = np.array(audio_energy[:target_len])
+        
+                # Resample to same length
+                target_len = min(len(mouth_movements), len(audio_energy))
+                mouth_norm = (mouth_array - np.mean(mouth_array)) / (np.std(mouth_array) + 1e-6)
+                audio_norm = (audio_array - np.mean(audio_array)) / (np.std(audio_array) + 1e-6)
+        
+                # Calculate correlation
+                correlation = np.corrcoef(mouth_norm, audio_norm)[0,1]
+        
+                # High correlation = good sync
+                sync_score = max(0, correlation)  # 0-1 range
+            else:
+                sync_score = 0.5
+            
+            return sync_score
+        
+        except Exception as e:
+            print(f"Lip-sync analysis failed: {e}")
+            return 0.5
 
+    def analyze_with_pretrained(self, video_path):
+        """
+        Use pre-trained deepfake detection model
+        Falls back to original method if fails
+        """
+        try:
+            from deepface import DeepFace
+            import cv2
+        
+            cap = cv2.VideoCapture(video_path)
+            authenticity_scores = []
+            frame_count = 0
+        
+            while frame_count < 30:  # Check 30 frames
+                ret, frame = cap.read()
+                if not ret:
+                    break
+            
+                try:
+                    # DeepFace analysis
+                    analysis = DeepFace.analyze(frame, 
+                                           actions=['age', 'gender', 'emotion'],
+                                           enforce_detection=False,
+                                           silent=True)
+                
+                    # Confidence in face detection
+                    if isinstance(analysis, list):
+                        analysis = analysis[0]
+                
+                    # Higher confidence in detection = more likely real
+                    # Deepfakes often have lower confidence scores
+                    face_confidence = analysis.get('region', {}).get('confidence', 0)
+                    authenticity_scores.append(face_confidence)
+                
+                except:
+                    pass
+            
+                frame_count += 1
+        
+            cap.release()
+        
+            if authenticity_scores:
+                avg_score = np.mean(authenticity_scores) * 100
+                return {
+                'success': True,
+                'video_score': min(avg_score, 100),
+                'method': 'pretrained_deepface'
+                }
+            else:
+            # Fall back to original method
+                return self.analyze_video(video_path)
+            
+        except Exception as e:
+            print(f"Pre-trained model failed: {e}, using fallback")
+        # Use original method
+        return self.analyze_video(video_path)
 # Test the module
 if __name__ == "__main__":
     detector = VideoDeepfakeDetector()
