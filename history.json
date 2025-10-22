@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1761142331877,
+    "uploadDate": "2025-10-22T19:42:11.878040",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 70.88,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 0,
+    "active_modalities": [
+      "video",
+      "audio"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nOur system has analyzed the content and provided the following verdict:\n\n**Overall Verdict:** AUTHENTIC\nThis means that our system believes the content to be genuine and not tampered with.\n\n**System Confidence:** 43.5%\nThis score indicates how confident our system is in its analysis. A higher score suggests greater confidence, but it also highlights areas where the system is uncertain or inconclusive.\n\n**Component Scores:**\n\n* **Video Analysis:** 0.0% (AUTHENTIC)\nOur video analysis component has found no evidence of manipulation or tampering with the visual content.\n* **Audio Analysis:** 0.0% (INCONCLUSIVE)\nUnfortunately, our audio analysis was unable to detect any anomalies or signs of manipulation in the audio track.\n* **Text Verification:** 0.0% (AUTHENTIC)\nOur text verification component has confirmed that all text elements appear genuine and not altered.\n\n**Technical Explanation:**\n\nThe video appears authentic, which is a significant factor in our overall confidence score. However, the audio analysis was inconclusive, meaning we couldn't detect any signs of manipulation or tampering with the audio track. This lack of confidence could be due to various factors, such as poor quality or insufficient training data.\n\n**Recommendation:**\n\nTo further verify the authenticity of this content, we recommend:\n\n1. Reviewing the original source and provenance of the content.\n2. Conducting additional audio analysis using more advanced techniques or tools.\n3. Comparing the video and audio with known authentic versions to ensure consistency.\n\nIf you have any questions or concerns about our analysis, please don't hesitate to ask.",
+    "message": "Analysis Complete",
+    "download_path": "/uploads/original.mp4"
+  },
+  {
+    "id": 1761141800615,
+    "uploadDate": "2025-10-22T19:33:20.615192",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 70.88,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 0,
+    "active_modalities": [
+      "video",
+      "audio"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nThe Holistic Content Integrity System (HCIS) has evaluated the content, and here's a breakdown of the results:\n\n**Overall Verdict:** AUTHENTIC\nThe HCIS system concludes that the content is authentic, with an overall confidence score of 0.0%. This suggests that the system is highly confident in its determination.\n\n**Component Scores:**\n\n* **Video Analysis:** 0.0% - The video component analysis revealed no suspicious activity or anomalies, indicating that the video appears to be genuine.\n* **Audio Analysis:** 0.0% - The audio analysis was inconclusive, meaning that the system couldn't detect any significant inconsistencies or anomalies in the audio content. This suggests that the audio may not be authentic or could be a manipulated recording.\n* **Text Verification:** 0.0% - The text verification component also detected no discrepancies, indicating that the text content appears to be genuine.\n\n**Technical Explanation:**\nThe HCIS system's confidence score is relatively low (43.5%) due to the inconclusive audio analysis result. This suggests that while the video and text components are deemed authentic, there is some uncertainty surrounding the authenticity of the audio content.\n\nTo further verify the authenticity of the content, it may be helpful to:\n\n* Review the audio file in more detail using a different analysis tool or technique.\n* Compare the audio content with other related recordings or sources to see if there are any inconsistencies.\n* Consider re-running the analysis with additional components or parameters to gain a better understanding of the results.\n\nIf you have any further questions or would like to discuss the results in more detail, please let me know!",
+    "message": "Analysis Complete",
+    "download_path": "/uploads/original.mp4"
+  },
+  {
+    "id": 1761141279880,
+    "uploadDate": "2025-10-22T19:24:39.880179",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 0,
+    "video_score": 83.77,
+    "audio_score": 0,
+    "text_score": 0,
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nThe Holistic Content Integrity System (HCIS) has analyzed the content and provided the following verdict:\n\n**Overall Verdict:** UNKNOWN\nThis indicates that the system was unable to make a conclusive determination about the authenticity or legitimacy of the content.\n\n**Final Score:** 0.0%\nThe final score represents the overall confidence level of the HCIS in its analysis, which is 0% in this case. This suggests that the system is highly uncertain and cannot provide a definitive answer.\n\n**System Confidence:** 34.0%\nThis value indicates the degree to which the HCIS is confident in its analysis. A lower confidence score suggests that the system is less certain about its findings.\n\n**Component Scores:**\n\n* **Video Analysis:** 0.0%\nThe video analysis component detected no suspicious or fake activity, scoring a 0%.\n* **Audio Analysis:** 0.0%\nThe audio analysis component also detected no suspicious or fake activity, scoring a 0%.\n* **Text Verification:** 0.0%\nThe text verification component did not detect any inconsistencies or red flags in the text content, scoring a 0%.\n\n**Technical Explanation:**\nThe HCIS relies on various algorithms and techniques to analyze the content. In this case, none of these components were able to identify any suspicious activity, which led to the overall verdict of UNKNOWN.\n\n**Recommendations:**\n\n1. Further analysis is recommended to gain more insight into the content.\n2. Consider collecting additional data or context to help inform the HCIS's decision-making process.\n3. If possible, verify the content through other means, such as manual review or consultation with experts.\n\nIf you have any questions about these results or would like further clarification on the technical explanation, please don't hesitate to ask!",
+    "message": "Analysis Complete",
+    "download_path": "/uploads/original.mp4"
+  },
+  {
+    "id": 1761141074635,
+    "uploadDate": "2025-10-22T19:21:14.635365",
+    "fileName": "SABRINA_CAPRENTER_KISSING_WALLPAPER_4K_HD.mp4",
+    "fileType": "video",
+    "fusion_score": 0,
+    "video_score": 24.09,
+    "audio_score": 0,
+    "text_score": 0,
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nOur Holistic Content Integrity System (HCIS) has conducted an analysis on the provided content, but unfortunately, we were unable to determine its authenticity with certainty.\n\nThe overall verdict is \"UNKNOWN\", indicating that our system was not able to confidently classify the content as authentic or fake. The low system confidence score of 14.0% further reinforces this uncertainty.\n\nEach component analysis also returned a low score:\n\n* **Video Analysis**: No anomalies were detected, suggesting that the video appears to be genuine.\n* **Audio Analysis**: Similar to the video, no suspicious patterns or inconsistencies were found, leading us to believe that the audio is authentic.\n* **Text Verification**: Our text verification tools did not detect any notable discrepancies or red flags.\n\nGiven these results, we cannot conclusively determine whether the content is authentic or fake. We recommend further verification through additional checks and analysis from multiple sources before making a final determination.\n\nIf you have any questions about our detection methods or would like to discuss further, please let us know!",
+    "message": "Analysis Complete",
+    "download_path": "/uploads/SABRINA_CAPRENTER_KISSING_WALLPAPER_4K_HD.mp4"
+  }
+]
