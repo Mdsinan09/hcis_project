@@ -13,12 +13,58 @@ const ShieldCheckIcon = (props) => (<svg {...props} xmlns="http://www.w3.org/200
 const ZapIcon = (props) => (<svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>);
 const LoaderIcon = (props) => (<svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>);
 
+// --- Aurora Background Component ---
+const AuroraBackground = () => {
+  return (
+    <div className="fixed inset-0 -z-20 overflow-hidden">
+      {/* Base dark background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-black"></div>
+      
+      {/* Aurora effect layers */}
+      <motion.div
+        className="absolute inset-0 opacity-30"
+        animate={{
+          background: [
+            'radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 80% 70%, rgba(147, 51, 234, 0.3) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 40% 80%, rgba(6, 182, 212, 0.3) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.3) 0%, transparent 50%)',
+          ],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+      
+      <motion.div
+        className="absolute inset-0 opacity-20"
+        animate={{
+          background: [
+            'radial-gradient(ellipse at 60% 20%, rgba(168, 85, 247, 0.4) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 30% 60%, rgba(59, 130, 246, 0.4) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 70% 80%, rgba(14, 165, 233, 0.4) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 60% 20%, rgba(168, 85, 247, 0.4) 0%, transparent 50%)',
+          ],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+      />
+      
+      {/* Subtle gradient overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30"></div>
+    </div>
+  );
+};
+
 // --- Utility Functions ---
 
-// The GEMINI_API_URL now relies purely on the public URL pattern.
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
 
-// Exponential backoff retry logic for API calls
 const fetchWithRetry = async (url, options, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -27,7 +73,6 @@ const fetchWithRetry = async (url, options, retries = 3) => {
         return response;
       }
       if (response.status === 403) {
-        // Specific handling for 403 to give a clearer message
         throw new Error(`API access denied (403). Please ensure your API key is correctly configured and authorized.`);
       }
       if (response.status >= 400 && response.status < 500) {
@@ -42,10 +87,8 @@ const fetchWithRetry = async (url, options, retries = 3) => {
   }
 };
 
-
 // --- Component Definitions ---
 
-// Framer Motion variants for scroll animations
 const containerVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: {
@@ -64,7 +107,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-// Custom component to handle the Glassmorphism style
 const GlassCard = ({ children, className = '', hoverEffect = false, ...props }) => (
   <motion.div
     className={`
@@ -75,9 +117,7 @@ const GlassCard = ({ children, className = '', hoverEffect = false, ...props }) 
       ${hoverEffect ? 'hover:bg-white/10 hover:shadow-gray-800/80' : ''}
     `}
     style={{
-      // Soft inner glow/border highlight
       boxShadow: '0 0 30px rgba(0,0,0,0.5)',
-      // Custom backdrop filter for better cross-browser blur
       backdropFilter: 'blur(12px) saturate(150%)',
       WebkitBackdropFilter: 'blur(12px) saturate(150%)',
     }}
@@ -87,7 +127,6 @@ const GlassCard = ({ children, className = '', hoverEffect = false, ...props }) 
   </motion.div>
 );
 
-// Custom Button component
 const GlassButton = ({ children, className = '', large = false, ...props }) => (
   <motion.button
     whileHover={{ y: -3, boxShadow: '0 10px 30px rgba(0, 150, 255, 0.4)' }}
@@ -110,7 +149,6 @@ const GlassButton = ({ children, className = '', large = false, ...props }) => (
   </motion.button>
 );
 
-// Animated Tagline Component
 const TaglineCycler = () => {
   const taglines = ["Detect.", "Analyze.", "Verify."];
   const [index, setIndex] = useState(0);
@@ -118,7 +156,7 @@ const TaglineCycler = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % taglines.length);
-    }, 2000); // Change tagline every 2 seconds
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -142,7 +180,6 @@ const TaglineCycler = () => {
   );
 };
 
-// Animated Counter Component
 const AnimatedCounter = ({ endValue, title, subtitle }) => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
@@ -189,10 +226,8 @@ const AnimatedCounter = ({ endValue, title, subtitle }) => {
   );
 };
 
-// Section Wrapper with Scroll Animation (Updated using forwardRef)
 const SectionWrapper = forwardRef(({ children, id, className = '', onMouseMove, ...props }, ref) => {
   const localRef = useRef(null);
-  // Use the passed ref if available, otherwise use the internal localRef
   const targetRef = ref || localRef;
   const inView = useInView(targetRef, { once: true, amount: 0.1 });
 
@@ -211,8 +246,6 @@ const SectionWrapper = forwardRef(({ children, id, className = '', onMouseMove, 
     </motion.section>
   );
 });
-
-// --- Gemini Text Analysis Tool Component (Updated for JSON and Pro Results) ---
 
 const TextVerificationTool = () => {
   const [inputText, setInputText] = useState('The stock market is guaranteed to rise by 50% next quarter due to a secret new technology launch by a major firm.');
@@ -278,7 +311,6 @@ const TextVerificationTool = () => {
 
         const data = await response.json();
         
-        // Safety check: ensure candidates and parts exist before accessing
         const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
         
         if (!jsonText) {
@@ -302,7 +334,6 @@ const TextVerificationTool = () => {
     }
   };
 
-  // Determine classes based on current risk level
   const riskClass = result?.risk ? riskColorMap[result.risk] : 'text-gray-400 border-gray-500 bg-gray-900/20';
 
   return (
@@ -391,7 +422,6 @@ const TextVerificationTool = () => {
   );
 };
 
-
 // --- Main App Component ---
 
 const features = [
@@ -427,20 +457,16 @@ const App = () => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
   
-  // Handler for external detector link
   const redirectToDetector = () => {
-      // NOTE: Replace this placeholder with your actual deployed detector URL when ready.
-      const externalUrl = "YOUR_EXTERNAL_DETECTOR_URL_HERE"; 
-      if (externalUrl.includes('YOUR_EXTERNAL_DETECTOR_URL_HERE')) {
-          // Changed to window.location.href to redirect/navigate out of the page
-          console.log("Placeholder URL: Redirecting to mock URL for demonstration.");
-          // We will use direct navigation to show the intended action.
-          window.location.href = "https://mock-detector.hcis.com"; 
+      // Replace with your actual frontend webapp URL
+      const frontendUrl = "YOUR_FRONTEND_WEBAPP_URL_HERE"; 
+      if (frontendUrl.includes('YOUR_FRONTEND_WEBAPP_URL_HERE')) {
+          console.log("Placeholder URL: Update with your actual frontend URL");
+          window.location.href = "https://your-frontend-app.com";
       } else {
-          window.location.href = externalUrl;
+          window.location.href = frontendUrl;
       }
   };
-
 
   const { scrollYProgress } = useScroll();
   const scaleImage = useTransform(scrollYProgress, [0, 0.5], [1, 1.05]);
@@ -448,12 +474,8 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] font-inter text-white overflow-x-hidden relative">
-      {/* Global Background Gradient Effects */}
-      <div className="fixed top-0 left-0 w-full h-full -z-20 opacity-50 pointer-events-none">
-        <div className="absolute w-[40vw] h-[40vw] rounded-full bg-blue-900/10 blur-3xl -top-[10vh] -left-[20vw]" style={{ mixBlendMode: 'screen' }}></div>
-        <div className="absolute w-[60vw] h-[60vw] rounded-full bg-purple-900/10 blur-3xl -bottom-[30vh] -right-[20vw]" style={{ mixBlendMode: 'screen' }}></div>
-        <div className="absolute w-[50vw] h-[50vw] rounded-full bg-teal-900/10 blur-3xl top-[20vh] left-[40vw]" style={{ mixBlendMode: 'screen' }}></div>
-      </div>
+      {/* Aurora Background */}
+      <AuroraBackground />
 
       {/* Hero Section Mouse-Tracking Glow */}
       <motion.div
@@ -478,10 +500,8 @@ const App = () => {
         className="fixed top-0 left-0 right-0 z-50 p-4"
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center h-16">
-          {/* Logo/Name */}
           <div className="text-xl md:text-2xl font-bold tracking-widest text-white/90">HCIS</div>
           
-          {/* Menu Items (Desktop) - Glass Navigation Bar */}
           <GlassCard className="hidden md:flex p-2 space-x-4 border-gray-600/50">
             {['About', 'How It Works', 'Features', 'Detection'].map((item) => (
               <a
@@ -494,17 +514,15 @@ const App = () => {
             ))}
           </GlassCard>
 
-          {/* Contact Button */}
           <GlassButton onClick={() => console.log('Action: Redirecting to Sales Contact Form')} className="hidden md:block">Contact Sales</GlassButton>
           
-          {/* Mobile Menu Icon (Placeholder for functionality) */}
           <div className="md:hidden">
             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
           </div>
         </div>
       </motion.nav>
 
-      {/* ------------------- 1. HERO SECTION (100vh) ------------------- */}
+      {/* ------------------- 1. HERO SECTION ------------------- */}
       <SectionWrapper id="hero" className="min-h-screen pt-24 text-left bg-transparent" onMouseMove={handleMouseMove} ref={heroRef}>
         <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 items-center gap-12">
           {/* Left: Text Content */}
@@ -538,11 +556,11 @@ const App = () => {
             </motion.div>
 
             <GlassButton large onClick={redirectToDetector}>
-              Go to Detector
+              Start Now
             </GlassButton>
           </div>
 
-          {/* Right: Abstract AI Image (Placeholder) with Parallax */}
+          {/* Right: Circuit Brain Image with Parallax */}
           <motion.div
             style={{ y: yImage, scale: scaleImage }}
             className="relative flex justify-center items-center w-full h-96 md:h-[600px] overflow-hidden rounded-3xl"
@@ -551,21 +569,21 @@ const App = () => {
             transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
           >
             <img
-              src="https://images.unsplash.com/photo-1549490349-866420c2d334?q=80&w=2835&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Intelligent Verification Abstract"
-              className="absolute inset-0 w-full h-full object-cover rounded-3xl"
-              style={{ filter: 'brightness(0.7) contrast(1.2)' }}
-              onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/1000x800/22223b/ffffff?text=Abstract+AI+Image" }}
+              src="f987f99970bcb46cbe78b4b6e91da6d2.jpg"
+              alt="AI Brain Circuit"
+              className="absolute inset-0 w-full h-full object-contain p-8"
+              onError={(e) => { 
+                e.target.onerror = null; 
+                e.target.src="https://placehold.co/800x800/1a1a2e/ffffff?text=AI+Brain+Circuit" 
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-            <ShieldCheckIcon className="absolute w-24 h-24 text-white/80 animate-pulse" strokeWidth={1} />
-            <p className="absolute bottom-8 text-lg font-light text-gray-300">Intelligent Verification</p>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-3xl"></div>
           </motion.div>
         </div>
       </SectionWrapper>
 
       {/* ------------------- 2. ABOUT US / WHAT WE DO ------------------- */}
-      <SectionWrapper id="about" className="pt-24 md:pt-36 bg-gradient-to-b from-[#0A0A0A] to-gray-950">
+      <SectionWrapper id="about" className="pt-24 md:pt-36 bg-transparent">
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center mb-4">
             About HCIS: Integrity in the Digital Age
@@ -580,7 +598,6 @@ const App = () => {
               <p className="text-gray-400 leading-relaxed text-lg">
                 In an era saturated with digitally manipulated content, HCIS stands as a beacon of trust. Our mission is to empower individuals and organizations with advanced AI tools to detect and verify the authenticity of multi-modal content, fostering a more credible digital landscape. We believe that clarity and truth are paramount for informed decision-making and secure communication.
               </p>
-              {/* Action: Scrolls to Features section */}
               <GlassButton onClick={() => scrollTo('features')} className="mt-4">Learn More About Us</GlassButton> 
             </motion.div>
             <motion.div variants={itemVariants} className="space-y-6">
@@ -588,7 +605,6 @@ const App = () => {
               <p className="text-gray-400 leading-relaxed text-lg">
                 Leveraging state-of-the-art machine learning, forensic analysis, and deep neural networks, HCIS offers unparalleled accuracy and speed. Unlike conventional systems, our multi-modal approach scrutinizes video, audio, and text simultaneously, ensuring comprehensive coverage and identifying subtle discrepancies often missed by single-domain detectors.
               </p>
-              {/* Action: Scrolls to How It Works section */}
               <GlassButton onClick={() => scrollTo('howitworks')} className="mt-4">Explore Our Technology</GlassButton> 
             </motion.div>
           </motion.div>
@@ -613,8 +629,7 @@ const App = () => {
       </SectionWrapper>
 
       {/* ------------------- 3. HOW IT WORKS ------------------- */}
-      <SectionWrapper id="howitworks" className="pt-24 md:pt-36 relative overflow-hidden bg-gray-950">
-        {/* Subtle Line Art Background from Abstract Vector example */}
+      <SectionWrapper id="howitworks" className="pt-24 md:pt-36 relative overflow-hidden bg-transparent">
         <div className="absolute inset-0 -z-10 opacity-10">
           <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
             <motion.path
@@ -647,7 +662,6 @@ const App = () => {
           </motion.h2>
 
           <motion.div variants={containerVariants} className="relative flex flex-col md:flex-row justify-between items-center">
-            {/* Horizontal Line Connector (Desktop) */}
             <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gray-700/50 transform -translate-y-1/2 mx-16">
               <motion.div
                 initial={{ width: 0 }}
@@ -681,18 +695,8 @@ const App = () => {
         </div>
       </SectionWrapper>
 
-      {/* ------------------- 4. GEMINI DETECTION TOOL ------------------- */}
-      <SectionWrapper id="detection" className="pt-24 md:pt-36 bg-gradient-to-t from-[#0A0A0A] to-gray-950">
-        <div className="max-w-7xl mx-auto px-4 w-full">
-          <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center mb-16">
-            Instant Integrity Check
-          </motion.h2>
-          <TextVerificationTool />
-        </div>
-      </SectionWrapper>
-
-      {/* ------------------- 5. FEATURES SECTION (2x3 Grid) ------------------- */}
-      <SectionWrapper id="features" className="pt-24 md:pt-36 bg-gradient-to-b from-[#0A0A0A] to-gray-950 min-h-0">
+      {/* ------------------- 5. FEATURES SECTION ------------------- */}
+      <SectionWrapper id="features" className="pt-24 md:pt-36 bg-transparent min-h-0">
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center mb-4">
             Core Capabilities
@@ -749,7 +753,6 @@ const App = () => {
             <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
               Integrate HCIS today and begin building trust in your digital ecosystem.
             </p>
-            {/* Action: Redirects to external detector URL via handler */}
             <GlassButton large onClick={redirectToDetector} className="bg-blue-600/20 border-blue-400/50">
               Start Now
             </GlassButton>
