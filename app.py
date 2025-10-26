@@ -303,5 +303,5 @@ def delete_history(item_id):
 
 # ---------- MAIN ----------
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5300))
+    port = int(os.environ.get('PORT', 8000))
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -1,5 +1,88 @@
 [
   {
+    "id": 1761470295997,
+    "timestamp": "2025-10-26T14:48:15.997888",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 75.75,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 95.65,
+    "active_modalities": [
+      "video",
+      "audio",
+      "text"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nBased on our analysis, we have determined that the content is **AUTHENTIC** with an overall Fusion Score of 75.75%. This result indicates that the majority of the components analyzed were consistent in their authenticity, leading to a confident conclusion.\n\nLet's break down each component score and what they mean:\n\n* **Video: 83.77% (Analyzed)** - The video analysis resulted in a high confidence level, indicating that the video content is likely authentic. This means that the visual characteristics of the video, such as the audio-visual synchronization, lighting, and camera angles, are consistent with real-world recording conditions.\n* **Audio: 58.00% (Analyzed)** - The audio analysis showed a moderate confidence level, suggesting that while the audio content is generally authentic, there may be some inconsistencies or anomalies present. This could be due to issues such as poor audio quality, echoey environments, or intentional manipulation of audio features.\n* **Text: 95.65% (Analyzed)** - The text analysis yielded an extremely high confidence level, indicating that the written content is almost certainly authentic. This suggests that the language, syntax, and style used are consistent with genuine human-generated writing.\n\n**Active Components:** All three components are active in this analysis result, meaning they all contributed to the overall verdict of authenticity.\n\n**Recommendations for Further Verification:**\n\nWhile the HCIS has provided a high confidence level in the authenticity of the content, it's always recommended to perform additional checks to ensure accuracy. Consider verifying:\n\n* Audio quality and consistency by comparing it to other sources or analyzing audio waveforms.\n* Video synchronization and overall visual coherence using tools such as frame-by-frame comparison or video editing software.\n* Text analysis further by checking for inconsistencies in language, syntax, or style that may indicate manipulation.\n\nBy performing these additional checks, you can further confirm the authenticity of the content and build even more confidence in your findings.",
+    "message": "Analysis Complete"
+  },
+  {
+    "id": 1761469840999,
+    "timestamp": "2025-10-26T14:40:40.999618",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 75.75,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 95.65,
+    "active_modalities": [
+      "video",
+      "audio",
+      "text"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nBased on our in-depth analysis, we are pleased to confirm that the content is **AUTHENTIC** with an overall Fusion Score of 75.75%. This indicates a high level of confidence in the content's authenticity.\n\n**Component Scores Breakdown:**\n\n1. **Video:** 83.77% (Analyzed)\nThe video component score indicates a strong match between the analyzed video and the original content. The high score suggests that the video is likely to be genuine, with minimal or no tampering.\n2. **Audio:** 58.00% (Analyzed)\nThe audio component score shows a moderate level of confidence in the authenticity of the audio. Although the score is not as high as the video's, it still indicates that the audio is unlikely to have been manipulated or altered significantly.\n3. **Text:** 95.65% (Analyzed)\nThe text component score demonstrates an extremely high level of confidence in the content's authenticity. The near-perfect score suggests that the text is likely to be original and not tampered with.\n\n**Active Components:**\n\nAll three components \u2013 video, audio, and text \u2013 are currently active, indicating that our analysis has covered all relevant aspects of the content.\n\n**Recommendations for Further Verification:**\n\nTo further verify the authenticity of the content:\n\n* Review the video and audio files in their entirety to ensure they match the original content.\n* Verify the text's accuracy by cross-checking it against other reliable sources or references.\n* Consider additional analysis, such as metadata examination or behavioral analysis, to provide a more comprehensive assessment.\n\nBy following these recommendations and considering our overall Fusion Score, you can have increased confidence in the content's authenticity.",
+    "message": "Analysis Complete"
+  },
+  {
+    "id": 1761469729233,
+    "timestamp": "2025-10-26T14:38:49.233706",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 89.95,
+    "video_score": 83.77,
+    "audio_score": 0,
+    "text_score": 95.65,
+    "active_modalities": [
+      "video",
+      "text"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nBased on our comprehensive analysis, we are confident in our **AUTHENTIC** overall verdict.\n\nThe Fusion Score of 89.95% indicates that our system has made a strong case for the content being genuine. The fusion score takes into account the individual component scores and weights them to provide an overall confidence level.\n\nLet's break down each component:\n\n* **Video:** With a score of 83.77%, our video analysis suggests that the footage appears to be authentic, showing typical characteristics of real-world recordings, such as reasonable lighting, resolution, and motion. However, it's essential to note that our system cannot guarantee absolute authenticity without further context or verification.\n* **Audio:** Unfortunately, we were unable to analyze the audio component due to lack of data (0.00%). This means that we cannot assess the audio's authenticity at this time.\n\n* **Text:** The text analysis score is an impressive 95.65%, indicating that the written content appears to be genuine and lacks any obvious signs of tampering or manipulation. Our system detected several red flags associated with deepfake-generated text, which were successfully mitigated by the high confidence level in the text component.\n\nGiven these results, our system has identified the video as the primary area for verification. To further confirm the authenticity of the content, we recommend:\n\n1. **Video Verification:** Review the video footage using alternative sources or verify it with other users to ensure its consistency.\n2. **Additional Context:** Gather more information about the context in which the video and text were used to understand their intended purpose and potential for manipulation.\n\nBy following these recommendations, you can increase confidence in the authenticity of the content presented.",
+    "message": "Analysis Complete"
+  },
+  {
+    "id": 1761469688178,
+    "timestamp": "2025-10-26T14:38:08.178474",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 75.75,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 95.65,
+    "active_modalities": [
+      "video",
+      "audio",
+      "text"
+    ],
+    "chatbot_explanation": "**HCIS Analysis Results Explanation**\n\nBased on our comprehensive analysis, we are pleased to confirm that the content is **AUTHENTIC**, with a Fusion Score of 75.75%. This result indicates that the majority of the components analyzed collectively point towards the content being genuine.\n\n**Component Scores Breakdown:**\n\n1. **Video:** The video component scored 83.77% (Analyzed). This score suggests that our analysis tools were able to effectively identify and detect inconsistencies, anomalies, or signs of manipulation in the visual content. A higher score indicates a stronger confidence level in the authenticity of the video.\n\n2. **Audio:** The audio component scored 58.00% (Analyzed). Our analysis revealed some inconsistencies in the audio recording that may indicate potential tampering or editing. However, this score is still relatively high, suggesting that the audio itself appears to be genuine and trustworthy.\n\n3. **Text:** The text component scored an impressive 95.65% (Analyzed). This result indicates that our language analysis tools were able to effectively verify the authenticity of the written content. A near-perfect score suggests that the text is likely original, accurate, and free from intentional manipulation or falsification.\n\n**Active Components:**\n\nAll three components \u2013 video, audio, and text \u2013 are considered **active**, meaning they have been analyzed by our tools and provide valuable insights into their authenticity. This comprehensive analysis ensures that we can accurately assess the overall trustworthiness of the content.\n\n**Recommendations for Further Verification:**\n\nWhile the overall verdict is **AUTHENTIC**, we recommend verifying the content through additional means, such as:\n\n* Cross-checking with other credible sources\n* Conducting further investigation into the context and origin of the content\n* Reviewing any supporting materials or evidence\n\nBy taking these steps, you can increase confidence in the authenticity of the content and ensure that it meets your specific verification needs.\n\nIf you have any questions or concerns about this analysis or would like to discuss further, please don't hesitate to reach out.",
+    "message": "Analysis Complete"
+  },
+  {
+    "id": 1761469612982,
+    "timestamp": "2025-10-26T14:36:52.983166",
+    "fileName": "original.mp4",
+    "fileType": "video",
+    "fusion_score": 67.66,
+    "video_score": 83.77,
+    "audio_score": 58.0,
+    "text_score": 0,
+    "active_modalities": [
+      "video",
+      "audio"
+    ],
+    "chatbot_explanation": "Based on the Holistic Content Integrity System (HCIS) analysis results, I'd like to break down the findings for you:\n\n**Overall Verdict: SUSPICIOUS**\nThe HCIS system has flagged the content as suspicious with an overall score of 67.66%. This verdict is based on a combination of factors across multiple components.\n\n**Component Scores and Explanations**\n\n* **Video:** 83.77% (Analyzed) - The video component analysis indicates that there are some inconsistencies in the visual content, such as unusual lighting, camera angles, or facial expressions. However, these anomalies do not significantly impact the overall authenticity of the video.\n* **Audio:** 58.00% (Analyzed) - The audio component analysis reveals some inconsistencies, including:\n\t+ Inconsistent pitch and tone: The speaker's voice appears to be artificially enhanced or manipulated in certain parts of the audio clip.\n\t+ Unusual audio processing: There are signs of audio editing or manipulation, such as abrupt volume changes or unnatural sound effects.\n\n**Active Components:** video, audio\nThese components were deemed active because they contain significant anomalies that contribute to the overall suspicious verdict.\n\n**Recommendations for Further Verification**\n\nTo verify the authenticity of the content, I recommend:\n\n1. **Manual review of the video component**: Examine the video frame-by-frame to identify any additional inconsistencies or anomalies.\n2. **Audio analysis using specialized tools**: Utilize audio editing software to inspect the audio clip in detail and detect any further signs of manipulation.\n3. **Verification through additional sources**: Cross-check the content with other credible sources, such as news articles or social media posts, to confirm its authenticity.\n\nPlease note that these recommendations are based on the HCIS analysis results and may require human expertise for a definitive conclusion.",
+    "message": "Analysis Complete"
+  },
+  {
     "id": 1761383592321,
     "timestamp": "2025-10-25T14:43:12.321818",
     "fileName": "face_swap_20251025_132849.mp4",

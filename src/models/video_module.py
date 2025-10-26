@@ -1,9 +1,4 @@
-try:
-    import cv2
-except Exception as e:
-    cv2 = None
-    print("⚠️ OpenCV not available on Render:", e)
-
+import cv2
 import numpy as np
 import sys
 import os
