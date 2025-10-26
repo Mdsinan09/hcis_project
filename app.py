@@ -7,6 +7,14 @@ import json
 from datetime import datetime
 import traceback 
 from backend_pipeline import HCISPipeline
+try:
+    import torch
+    import transformers
+    import librosa
+    import moviepy.editor as mp
+    import cv2
+except ImportError:
+    print("⚠️ Heavy ML libraries not loaded (Render free mode).")
 
 # ---------- INIT ----------
 app = Flask(__name__)
